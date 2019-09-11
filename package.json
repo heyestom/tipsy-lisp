@@ -1,0 +1,30 @@
+{
+    "name": "tipsy",
+    "version": "0.0.1",
+    "description": "A list which is a little worse for wear",
+    "main": "src/main.js",
+    "dependencies": {},
+    "devDependencies": {
+        "@babel/cli": "^7.4.4",
+        "@babel/core": "^7.4.4",
+        "@babel/node": "^7.2.2",
+        "@babel/preset-env": "^7.4.4",
+        "@istanbuljs/nyc-config-babel": "^2.1.1",
+        "babel-plugin-istanbul": "^5.1.4",
+        "chai": "^4.2.0",
+        "mocha": "^6.1.4",
+        "nyc": "^14.1.0",
+        "sinon": "^7.3.2"
+    },
+    "scripts": {
+        "test": "nyc mocha",
+        "build": "babel src --out-dir build"
+    },
+    "keywords": [
+        "lisp",
+        "hic",
+        "tipsy"
+    ],
+    "author": "Tom Heyes",
+    "license": "ISC"
+}
