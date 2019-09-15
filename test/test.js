@@ -18,6 +18,27 @@ describe('End to end parsing and evaluation', () => {
         expect(result).to.eql(expectedOutput);
     });
 
+    it('can subtract an arbitrary number of numbers', () => {
+        const tipsyExpression = '(- 9 3 3 2)';
+        const expectedOutput = 1;
+        const result = main.interprit(tipsyExpression);
+        expect(result).to.eql(expectedOutput);
+    });
+
+    it('can multiply numbers', () => {
+        const tipsyExpression = '(* 3 1 2)';
+        const expectedOutput = 6;
+        const result = main.interprit(tipsyExpression);
+        expect(result).to.eql(expectedOutput);
+    });
+
+    it('can divide numbers', () => {
+        const tipsyExpression = '(/ 4 2)';
+        const expectedOutput = 2;
+        const result = main.interprit(tipsyExpression);
+        expect(result).to.eql(expectedOutput);
+    });
+
     it('can work with sub lists', () => {
         const tipsyExpression = '(+ (- 1 2) (- 8 4))';
         const expectedOutput = 3;
@@ -280,7 +301,7 @@ describe('Parsing: ', () => {
             expect(resultAST).to.be.eql(input);
         });
 
-        it('should be able to add two numbers together', () => {
+        it('should be able to add two numbers together using a function', () => {
             const firstNumber = 2;
             const secondNumber = 4;
             const expectedNumber = firstNumber + secondNumber;

@@ -1,4 +1,6 @@
 const functions = {
+    '/': (...args) => args.reduce((total, current) => (total / current)),
+    '*': (...args) => args.reduce((total, current) => (total * current)),
     '+': (...args) => args.reduce((total, current) => (total + current)),
     '-': (...args) => args.reduce((total, current) => (total - current))
 };
@@ -56,7 +58,6 @@ const parser = {
 
         // check functions
         if (functions[inputAST.first]) {
-
             const functionToCall = functions[inputAST.first];
             console.log('Found function ', inputAST.first);
 
@@ -74,13 +75,18 @@ const parser = {
             const restEvalueation = this.eval(inputAST.rest);
             console.log(restEvalueation);
 
-            const list = [inputAST.first, restEvalueation];
+            let list;
+            if (Array.isArray(restEvalueation)) {
+                list = [inputAST.first, ...restEvalueation];
+            } else {
+                list = [inputAST.first, restEvalueation];
+            }
+
             console.log('returning list', list);
             return list;
         }
 
         // constants
-
         return inputAST.first;
     },
     interprit(tipsyExpression) {
