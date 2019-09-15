@@ -1,3 +1,8 @@
+const functions = {
+    '+': (...args) => args.reduce((total, current) => (total + current)),
+    '-': (...args) => args.reduce((total, current) => (total - current))
+};
+
 const parser = {
     tokenise(lisp_string) {
         const openParenRegex = /\(/g;
@@ -39,32 +44,42 @@ const parser = {
             return null;
         }
     },
-    eval(inputAST){
-        return inputAST.first;
+    eval(inputAST) {
+        console.log(inputAST);
 
-    },
-    printAST(AST, depth) {
-        const printDepth = (value, depth) => {
-            const depthString = "==";
-            if (depth > 0) {
-                console.log(depthString.repeat(depth) + '> ' + value);
-            }
-        };
+        // check non empty
+        // if (inputAST === null || inputAST.first === undefined) {
+        //     return null;
+        // }
+        // check functions
+        if (functions[inputAST.first]) {
 
-        depth = depth? depth : 0;
+            const functionToCall = functions[inputAST.first];
+            console.log('Found function ', inputAST.first);
 
-        if (AST === null || AST.first === null) {
-            return;
-        } else if (typeof(AST.first) === 'object') {
-            depth++;
-            this.printAST(AST.first, depth);
-            this.printAST(AST.rest, depth);
-        } else {
-            printDepth(AST.first, depth);
-            this.printAST(AST.rest, depth);
+            const restEvalueation = this.eval(inputAST.rest);
+            console.log('Calling function:', functionToCall, 'with args ', restEvalueation);
+
+            const functionCallRestult = functionToCall(...restEvalueation);
+            console.log('Returning value', functionCallRestult);
+
+            return functionCallRestult;
         }
+
+        if (inputAST.rest) {
+            console.log('Found value: ', inputAST.first);
+            const restEvalueation = this.eval(inputAST.rest);
+            console.log(restEvalueation);
+
+            const list = [inputAST.first, restEvalueation];
+            console.log('returning list', list);
+            return list;
+        }
+
+        // constants
+
+        return inputAST.first;
     }
 };
 
 module.exports = parser;
-

@@ -137,7 +137,7 @@ describe('Parsing: ', () => {
             const tokens = ['4'];
             const resultAST = main.buildAST(tokens);
 
-            expect(resultAST).to.eql(consCell(4));
+            expect(resultAST).to.eql(consCell(4, null));
         });
 
         it('should build an AST of one symbol', () => {
@@ -158,6 +158,18 @@ describe('Parsing: ', () => {
         it('should lists in the first position and build down', () => {
             const tokens = ['(', '1', ')'];
             const expectedAST = consCell(consCell(1));
+
+            const resultAST = main.buildAST(tokens);
+            expect(expectedAST).to.be.eql(resultAST);
+        });
+
+        it('should terminate all consCell chains with nulls', () => {
+            const tokens = ['(', '+', '1', '4', ')'];
+            const expectedAST =
+                consCell(
+                    consCell('+',
+                        consCell(1,
+                            consCell(4))));
 
             const resultAST = main.buildAST(tokens);
             expect(expectedAST).to.be.eql(resultAST);
@@ -228,10 +240,51 @@ describe('Parsing: ', () => {
             };
         };
 
-        it('should return constants', () => {
+        it('should return numeric constants', () => {
             const input = 4;
             const resultAST = main.eval(consCell(input));
             expect(resultAST).to.be.eql(input);
+        });
+
+        it('should return string constants', () => {
+            const input = 'b';
+            const resultAST = main.eval(consCell(input));
+            expect(resultAST).to.be.eql(input);
+        });
+
+        xit('should return the empty list', () => {
+            const input = '';
+            const resultAST = main.eval(consCell(input));
+            expect(resultAST).to.be.eql(input);
+        });
+
+        it('should be able to add two numbers together', () => {
+            const firstNumber = 2;
+            const secondNumber = 4;
+            const expectedNumber = firstNumber + secondNumber;
+
+            const inputAST =
+                consCell('+',
+                    consCell(firstNumber,
+                        consCell(secondNumber)));
+
+            const resultAST = main.eval(inputAST);
+
+            expect(resultAST).to.be.eql(expectedNumber);
+        });
+
+        it('should be able to subtract one number from another', () => {
+            const firstNumber = 190;
+            const secondNumber = 23;
+            const expectedNumber = firstNumber - secondNumber;
+
+            const inputAST =
+                consCell('-',
+                    consCell(firstNumber,
+                        consCell(secondNumber)));
+
+            const resultAST = main.eval(inputAST);
+            expect(resultAST).to.be.eql(expectedNumber);
         });
     });
 });
