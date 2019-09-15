@@ -15,7 +15,6 @@ const parser = {
     },
     castAtom(atom) {
         return Number(atom) || atom;
-
     },
     buildAST(tokens) {
         const consCell = (first, rest) => {
@@ -47,10 +46,14 @@ const parser = {
     eval(inputAST) {
         console.log(inputAST);
 
-        // check non empty
-        // if (inputAST === null || inputAST.first === undefined) {
-        //     return null;
-        // }
+        // nested lists 
+        if (typeof inputAST.first === 'object' && inputAST.first !== null) {
+            if (inputAST.rest !== null) {
+                return [this.eval(inputAST.first), this.eval(inputAST.rest)];
+            }
+            return this.eval(inputAST.first);
+        }
+
         // check functions
         if (functions[inputAST.first]) {
 
@@ -58,7 +61,7 @@ const parser = {
             console.log('Found function ', inputAST.first);
 
             const restEvalueation = this.eval(inputAST.rest);
-            console.log('Calling function:', functionToCall, 'with args ', restEvalueation);
+            console.log('Calling function:', inputAST.first, 'with args ', restEvalueation);
 
             const functionCallRestult = functionToCall(...restEvalueation);
             console.log('Returning value', functionCallRestult);
@@ -79,6 +82,23 @@ const parser = {
         // constants
 
         return inputAST.first;
+    },
+    interprit(tipsyExpression) {
+        console.log(tipsyExpression);
+
+        const tokenisedExpresion = this.tokenise(tipsyExpression);
+        console.log('Tokens: ');
+        console.log(tokenisedExpresion);
+
+        const AST = this.buildAST(tokenisedExpresion);
+        console.log('AST: ');
+        console.log(AST);
+
+        const output = this.eval(AST);
+        console.log('Output: ');
+        console.log(output);
+
+        return output;
     }
 };
 

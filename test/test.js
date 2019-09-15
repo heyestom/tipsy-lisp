@@ -3,6 +3,28 @@ const sinon = require('sinon');
 const expect = require('chai').expect;
 
 
+describe('End to end parsing and evaluation', () => {
+    it('will return numeric constants', () => {
+        const tipsyExpression = '4';
+        const expectedOutput = 4;
+        const result = main.interprit(tipsyExpression);
+        expect(result).to.eql(expectedOutput);
+    });
+
+    it('can add two numbers', () => {
+        const tipsyExpression = '(+ 1 2)';
+        const expectedOutput = 3;
+        const result = main.interprit(tipsyExpression);
+        expect(result).to.eql(expectedOutput);
+    });
+
+    it('can work with sub lists', () => {
+        const tipsyExpression = '(+ (- 1 2) (- 8 4))';
+        const expectedOutput = 3;
+        const result = main.interprit(tipsyExpression);
+        expect(result).to.eql(expectedOutput);
+    });
+});
 
 describe('Parsing: ', () => {
     describe('tokenise should break down input into individual parts', () => {
