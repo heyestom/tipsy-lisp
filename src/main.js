@@ -2,7 +2,7 @@ const functions = {
     '/': (...args) => args.reduce((total, current) => (total / current)),
     '*': (...args) => args.reduce((total, current) => (total * current)),
     '+': (...args) => args.reduce((total, current) => (total + current)),
-    '-': (...args) => args.reduce((total, current) => (total - current))
+    '-': (...args) => args.length === 1 ? args[0] * -1 : args.reduce((total, current) => (total - current))
 };
 
 const parser = {
@@ -63,8 +63,12 @@ const parser = {
 
             const restEvalueation = this.eval(inputAST.rest);
             console.log('Calling function:', inputAST.first, 'with args ', restEvalueation);
-
-            const functionCallRestult = functionToCall(...restEvalueation);
+            let functionCallRestult;
+            if (Array.isArray(restEvalueation)) {
+                functionCallRestult = functionToCall(...restEvalueation);
+            } else {
+                functionCallRestult = functionToCall(restEvalueation);
+            }
             console.log('Returning value', functionCallRestult);
 
             return functionCallRestult;
