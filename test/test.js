@@ -39,10 +39,31 @@ describe('End to end parsing and evaluation', () => {
         expect(result).to.eql(expectedOutput);
     });
 
-    describe('can handle single parameter arithmetic operations', () => {
+    describe('can handle single parameter arithmetic operations sensibly', () => {
+        it('addition', () => {
+            const tipsyExpression = '(+ 454)';
+            const expectedOutput = 454;
+            const result = main.interprit(tipsyExpression);
+            expect(result).to.eql(expectedOutput);
+        });
+
         it('subtraction', () => {
             const tipsyExpression = '(- 67)';
             const expectedOutput = -67;
+            const result = main.interprit(tipsyExpression);
+            expect(result).to.eql(expectedOutput);
+        });
+
+        it('division', () => {
+            const tipsyExpression = '(/ 2)';
+            const expectedOutput = 0.5;
+            const result = main.interprit(tipsyExpression);
+            expect(result).to.eql(expectedOutput);
+        });
+
+        it('multiplication', () => {
+            const tipsyExpression = '(* 2)';
+            const expectedOutput = 2;
             const result = main.interprit(tipsyExpression);
             expect(result).to.eql(expectedOutput);
         });

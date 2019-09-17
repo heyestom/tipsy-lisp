@@ -1,8 +1,8 @@
 const functions = {
-    '/': (...args) => args.reduce((total, current) => (total / current)),
+    '/': (...args) => args.length === 1 ? 1 / args[0] : args.reduce((total, current) => (total / current)),
     '*': (...args) => args.reduce((total, current) => (total * current)),
     '+': (...args) => args.reduce((total, current) => (total + current)),
-    '-': (...args) => args.length === 1 ? args[0] * -1 : args.reduce((total, current) => (total - current))
+    '-': (...args) => args.length === 1 ? 0 - args[0] : args.reduce((total, current) => (total - current))
 };
 
 const parser = {
