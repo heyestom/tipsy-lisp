@@ -2,7 +2,7 @@
     "name": "tipsy",
     "version": "0.0.1",
     "description": "A list which is a little worse for wear",
-    "main": "src/main.js",
+    "main": "src/repl.js",
     "dependencies": {},
     "devDependencies": {
         "@babel/cli": "^7.6.0",
