@@ -75,6 +75,22 @@ describe('End to end parsing and evaluation', () => {
         const result = main.interprit(tipsyExpression);
         expect(result).to.eql(expectedOutput);
     });
+
+    describe('comparatives', () => {
+        it('supports greater than comparison', () => {
+            const tipsyExpression = '(> 3 4)';
+            const expectedOutput = false;
+            const result = main.interprit(tipsyExpression);
+            expect(result).to.eql(expectedOutput);
+        });
+
+        it('supports greater than comparison for multiple numbers', () => {
+            const tipsyExpression = '(> 6 5 4 2 1 0)';
+            const expectedOutput = true;
+            const result = main.interprit(tipsyExpression);
+            expect(result).to.eql(expectedOutput);
+        });
+    });
 });
 
 describe('Parsing: ', () => {
