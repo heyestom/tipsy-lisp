@@ -91,6 +91,53 @@ describe('End to end parsing and evaluation', () => {
             expect(result).to.eql(expectedOutput);
         });
     });
+
+    describe('conditionals! :)', () => {
+        describe('if statements wich', () => {
+            it('work for case with only true', () => {
+                const tipsyExpression = '(if true 7)';
+                const expectedOutput = 7;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
+            it('work for true case', () => {
+                const tipsyExpression = '(if true 7 9)';
+                const expectedOutput = 7;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
+            it('work for true evaluating comparison', () => {
+                const tipsyExpression = '(if (> 6 1) 5 9)';
+                const expectedOutput = 5;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
+            it('work for true cases with conditional function calls', () => {
+                const tipsyExpression = '(if (> 6 1) (+ 1 3 4) 9)';
+                const expectedOutput = 8;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
+            it('work for false case', () => {
+                const tipsyExpression = '(if false 7 9)';
+                const expectedOutput = 9;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
+            it('work for false evaluating comparison', () => {
+                const tipsyExpression = '(if (> 4 8) 7 10)';
+                const expectedOutput = 10;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
+            it('work for false cases with conditional function calls', () => {
+                const tipsyExpression = '(if (> 4 8) 7 (- 100 10))';
+                const expectedOutput = 90;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
+        });
+    });
 });
 
 describe('Parsing: ', () => {

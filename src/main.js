@@ -15,6 +15,23 @@ const functions = {
     }
 };
 
+const specialForms = {
+    'if': (AST) => {
+        const check = typeof AST.first === 'object' ? parser.eval(AST.first) : AST.first;
+        if (check) {
+            console.log('true case');
+            return typeof AST.rest.first === 'object' ?
+                parser.eval(AST.rest.first) :
+                AST.rest.first;
+        } else {
+            console.log('false case');
+            return typeof AST.rest.rest.first === 'object' ?
+                parser.eval(AST.rest.rest.first) :
+                AST.rest.rest.first;
+        };
+    }
+};
+
 const parser = {
     tokenise(lisp_string) {
         const openParenRegex = /\(/g;
@@ -26,6 +43,11 @@ const parser = {
             .filter(token => token.trim() !== "");
     },
     castAtom(atom) {
+        if (atom === 'false') {
+            return false;
+        } else if (atom === 'true') {
+            return true;
+        }
         return Number(atom) || atom;
     },
     buildAST(tokens) {
@@ -56,14 +78,27 @@ const parser = {
         }
     },
     eval(inputAST) {
+        console.log('EVAL');
         console.log(inputAST);
 
         // nested lists 
         if (typeof inputAST.first === 'object' && inputAST.first !== null) {
+            console.log('Found list:');
             if (inputAST.rest !== null) {
                 return [this.eval(inputAST.first), this.eval(inputAST.rest)];
             }
             return this.eval(inputAST.first);
+        }
+
+        if (specialForms[inputAST.first]) {
+            const specialForm = specialForms[inputAST.first];
+            console.log('Found special form', inputAST.first);
+            console.log(specialForm);
+
+            let specialFormResult = specialForm(inputAST.rest);
+
+            console.log('Returning special form value', specialFormResult);
+            return specialFormResult;
         }
 
         // check functions
@@ -101,6 +136,7 @@ const parser = {
         }
 
         // constants
+        console.log('Found constant ', inputAST.first);
         return inputAST.first;
     },
     interprit(tipsyExpression) {
