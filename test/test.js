@@ -136,6 +136,30 @@ describe('End to end parsing and evaluation', () => {
                 const result = main.interprit(tipsyExpression);
                 expect(result).to.eql(expectedOutput);
             });
+            it('can be embeded in sub lists', () => {
+                const tipsyExpression = '(+ 2 (if true 7) 10)';
+                const expectedOutput = 19;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
+            it('can be embeded in sub lists when false', () => {
+                const tipsyExpression = '(+ 2 (if false 7 9) 10 10)';
+                const expectedOutput = 31;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
+            it('can be embeded in sub lists', () => {
+                const tipsyExpression = '(+ 2 (if (if (> 2 8) (> 10 1) (> 24 90)) 100 0) 10 10)';
+                const expectedOutput = 22;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
+            it('can be nested in other ifs in sub lists', () => {
+                const tipsyExpression = '(+ 2 (if (if true (> 10 1) false) 100 0) 10 10)';
+                const expectedOutput = 122;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
         });
     });
 });
@@ -400,9 +424,10 @@ describe('Parsing: ', () => {
             const expectedNumber = firstNumber + secondNumber;
 
             const inputAST =
-                consCell('+',
-                    consCell(firstNumber,
-                        consCell(secondNumber)));
+                consCell(
+                    consCell('+',
+                        consCell(firstNumber,
+                            consCell(secondNumber))));
 
             const resultAST = main.eval(inputAST);
 
@@ -415,9 +440,10 @@ describe('Parsing: ', () => {
             const expectedNumber = firstNumber - secondNumber;
 
             const inputAST =
-                consCell('-',
-                    consCell(firstNumber,
-                        consCell(secondNumber)));
+                consCell(
+                    consCell('-',
+                        consCell(firstNumber,
+                            consCell(secondNumber))));
 
             const resultAST = main.eval(inputAST);
             expect(resultAST).to.be.eql(expectedNumber);

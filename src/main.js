@@ -2,7 +2,10 @@ const functions = {
     '/': (...args) => args.length === 1 ? 1 / args[0] : args.reduce((total, current) => (total / current)),
     '*': (...args) => args.reduce((total, current) => (total * current)),
     '+': (...args) => args.reduce((total, current) => (total + current)),
-    '-': (...args) => args.length === 1 ? 0 - args[0] : args.reduce((total, current) => (total - current)),
+    '-': (...args) => {
+        console.log(args);
+        return args.length === 1 ? 0 - args[0] : args.reduce((total, current) => (total - current));
+    },
     '>': (...args) => {
         let cond = true;
         args.reduce((x, y) => {
@@ -17,7 +20,13 @@ const functions = {
 
 const specialForms = {
     'if': (AST) => {
-        const check = typeof AST.first === 'object' ? parser.eval(AST.first) : AST.first;
+        console.log('IF:');
+        console.log(AST);
+        const check = typeof AST.first === 'object' ? parser.eval({
+            first: AST.first
+        }) : AST.first;
+        console.log('check');
+        console.log(check);
         if (check) {
             console.log('true case');
             return typeof AST.rest.first === 'object' ?
@@ -47,6 +56,8 @@ const parser = {
             return false;
         } else if (atom === 'true') {
             return true;
+        } else if (atom === '0') {
+            return 0;
         }
         return Number(atom) || atom;
     },
@@ -81,13 +92,27 @@ const parser = {
         console.log('EVAL');
         console.log(inputAST);
 
-        // nested lists 
+        if (!inputAST) return null;
+        // list - make a function call to the first element with the rest  
         if (typeof inputAST.first === 'object' && inputAST.first !== null) {
             console.log('Found list:');
+            let evaluatedList = this.eval(inputAST.first);
+            let restEvalueation;
             if (inputAST.rest !== null) {
-                return [this.eval(inputAST.first), this.eval(inputAST.rest)];
+                restEvalueation = this.eval(inputAST.rest);
+                if (restEvalueation !== null && !Array.isArray(restEvalueation)) {
+                    restEvalueation = [restEvalueation];
+                }
             }
-            return this.eval(inputAST.first);
+            // more mutation :/
+            if (Array.isArray(evaluatedList)) {
+
+                const functionToCall = evaluatedList.shift();
+                return restEvalueation ? [functionToCall(...evaluatedList), ...restEvalueation] :
+                    functionToCall(...evaluatedList);
+            } else {
+                return restEvalueation ? [evaluatedList, ...restEvalueation] : evaluatedList;
+            }
         }
 
         if (specialForms[inputAST.first]) {
@@ -105,18 +130,16 @@ const parser = {
         if (functions[inputAST.first]) {
             const functionToCall = functions[inputAST.first];
             console.log('Found function ', inputAST.first);
-
             const restEvalueation = this.eval(inputAST.rest);
-            console.log('Calling function:', inputAST.first, 'with args ', restEvalueation);
-            let functionCallRestult;
-            if (Array.isArray(restEvalueation)) {
-                functionCallRestult = functionToCall(...restEvalueation);
-            } else {
-                functionCallRestult = functionToCall(restEvalueation);
-            }
-            console.log('Returning value', functionCallRestult);
 
-            return functionCallRestult;
+            let list;
+            if (Array.isArray(restEvalueation)) {
+                list = [functionToCall, ...restEvalueation];
+            } else {
+                list = [functionToCall, restEvalueation];
+            }
+            console.log('returning list :', list);
+            return list;
         }
 
         if (inputAST.rest) {
