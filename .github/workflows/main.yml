@@ -1,6 +1,5 @@
-on:
-  check_suite:
-    types: [completed]
+name: AutoMerge
+on: check_suite
 
 jobs:
   auto_merge_job:
