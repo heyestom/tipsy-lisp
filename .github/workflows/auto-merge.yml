@@ -1,4 +1,6 @@
-on: [check_run]
+on:
+  check_suite:
+    types: [completed]
 
 jobs:
   auto_merge_job:
