@@ -1,0 +1,14 @@
+on: [check_run]
+
+jobs:
+  auto_merge_job:
+    runs-on: ubuntu-latest
+    name: A job to auto approve PRs which past tests for specifc users
+    steps:
+    - name: Auto Merge Step
+      id: AutoMerge
+      uses: heyestom/github-js-docker-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        auto-merge-uses: 'heyestom'
