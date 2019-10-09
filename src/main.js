@@ -1,5 +1,6 @@
 const {functions: functions} = require('./core-functions');
 const {specialForms: specialForms} = require('./special-forms');
+const {buildAST: buildAST} = require('./abstract-syntax-tree-builder');
 
 const parser = {
     tokenise(lisp_string) {
@@ -10,43 +11,6 @@ const parser = {
             .replace(closeParenRegex, ' ) ')
             .split(" ")
             .filter(token => token.trim() !== "");
-    },
-    castAtom(atom) {
-        if (atom === 'false') {
-            return false;
-        } else if (atom === 'true') {
-            return true;
-        } else if (atom === '0') {
-            return 0;
-        }
-        return Number(atom) || atom;
-    },
-    buildAST(tokens) {
-        const consCell = (first, rest) => {
-            return {
-                first: first,
-                rest: rest
-            };
-        };
-
-        if (tokens.length > 0) {
-            //mutates array, yuck... SUPER YUCK
-            const token = tokens.shift();
-
-            if (token === ')') {
-                return null;
-            }
-            if (token === '(') {
-                // tokens is mutating between recursive calls and its icky :(
-                const first = this.buildAST(tokens);
-                const rest = this.buildAST(tokens);
-                return consCell(first, rest);
-            }
-            return consCell(this.castAtom(token),
-                this.buildAST(tokens));
-        } else {
-            return null;
-        }
     },
     eval(inputAST) {
         if (!inputAST) return null;
@@ -111,7 +75,7 @@ const parser = {
     },
     interprit(tipsyExpression) {
         const tokenisedExpresion = this.tokenise(tipsyExpression);
-        const AST = this.buildAST(tokenisedExpresion);
+        const AST = buildAST(tokenisedExpresion);
         const output = this.eval(AST);
         return output;
     }

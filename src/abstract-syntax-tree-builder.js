@@ -9,14 +9,14 @@ export const castAtom = (atom) => {
     return Number(atom) || atom;
 };
 
-export const buildAST = (tokens) => {
-
-    const consCell = (first, rest) => {
-        return {
-            first: first,
-            rest: rest
-        };
+export const consCell = (first, rest) => {
+    return {
+        first: first,
+        rest: rest || null
     };
+};
+
+export const buildAST = (tokens) => {
 
     if (tokens.length > 0) {
         //mutates array, yuck... SUPER YUCK
