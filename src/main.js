@@ -1,22 +1,5 @@
 const {functions: functions} = require('./core-functions');
-
-const specialForms = {
-    'if': (AST) => {
-        const check = typeof AST.first === 'object' ? parser.eval({
-            first: AST.first
-        }) : AST.first;
-        if (check) {
-            return typeof AST.rest.first === 'object' ?
-                parser.eval(AST.rest.first) :
-                AST.rest.first;
-        } else {
-            if(AST.rest.rest === null) return null;
-            return typeof AST.rest.rest.first === 'object' ?
-                parser.eval(AST.rest.rest.first) :
-                AST.rest.rest.first;
-        };
-    }
-};
+const {specialForms: specialForms} = require('./special-forms');
 
 const parser = {
     tokenise(lisp_string) {
@@ -91,7 +74,7 @@ const parser = {
         if (specialForms[inputAST.first]) {
             const specialForm = specialForms[inputAST.first];
 
-            let specialFormResult = specialForm(inputAST.rest);
+            let specialFormResult = specialForm(this, inputAST.rest);
 
             return specialFormResult;
         }
