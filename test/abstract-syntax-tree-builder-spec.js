@@ -16,6 +16,15 @@ describe('Converting atomic tokens into appropriate types', () => {
         expect(result).to.be.eql(expectedNumber);
     });
 
+    it('should handle 0 as a number', () => {
+        const numberToken = '0';
+        const expectedNumber = 0;
+        const result = castAtom(numberToken);
+
+        expect(result).to.be.a('number');
+        expect(result).to.be.eql(expectedNumber);
+    });
+
     it('should handle negative numbers', () => {
         const numberToken = '-127';
         const expectedNumber = -127;
