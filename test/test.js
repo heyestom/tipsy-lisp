@@ -118,6 +118,12 @@ describe('End to end parsing and evaluation', () => {
                 const result = main.interprit(tipsyExpression);
                 expect(result).to.eql(expectedOutput);
             });
+            it('work for empty false case', () => {
+                const tipsyExpression = '(if false 7)';
+                const expectedOutput = null;
+                const result = main.interprit(tipsyExpression);
+                expect(result).to.eql(expectedOutput);
+            });
             it('work for false case', () => {
                 const tipsyExpression = '(if false 7 9)';
                 const expectedOutput = 9;

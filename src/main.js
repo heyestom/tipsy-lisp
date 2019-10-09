@@ -25,6 +25,7 @@ const specialForms = {
                 parser.eval(AST.rest.first) :
                 AST.rest.first;
         } else {
+            if(AST.rest.rest === null) return null;
             return typeof AST.rest.rest.first === 'object' ?
                 parser.eval(AST.rest.rest.first) :
                 AST.rest.rest.first;
