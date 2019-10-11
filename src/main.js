@@ -1,6 +1,13 @@
-const {functions: functions} = require('./core-functions');
-const {specialForms: specialForms} = require('./special-forms');
-const {buildAST: buildAST} = require('./abstract-syntax-tree-builder');
+const {
+    functions: functions
+} = require('./core-functions');
+const {
+    specialForms: specialForms
+} = require('./special-forms');
+const {
+    buildAST: buildAST,
+    consCell: consCell
+} = require('./abstract-syntax-tree-builder');
 
 const parser = {
     tokenise(lisp_string) {
@@ -14,32 +21,24 @@ const parser = {
     },
     eval(inputAST) {
         if (!inputAST) return null;
-        // list - make a function call to the first element with the rest  
+        // list - make a function call to the first element with the rest
+
         if (typeof inputAST.first === 'object' && inputAST.first !== null) {
             let evaluatedList = this.eval(inputAST.first);
             let restEvalueation;
             if (inputAST.rest !== null) {
                 restEvalueation = this.eval(inputAST.rest);
-                if (restEvalueation !== null && !Array.isArray(restEvalueation)) {
-                    restEvalueation = [restEvalueation];
-                }
             }
-            // more mutation :/
             if (Array.isArray(evaluatedList)) {
-
-                const functionToCall = evaluatedList.shift();
-                return restEvalueation ? [functionToCall(...evaluatedList), ...restEvalueation] :
-                    functionToCall(...evaluatedList);
+                return consCell(functionToCall(evaluatedList), restEvalueation);
             } else {
-                return restEvalueation ? [evaluatedList, ...restEvalueation] : evaluatedList;
+                return consCell(evaluatedList, restEvalueation);
             }
         }
 
         if (specialForms[inputAST.first]) {
             const specialForm = specialForms[inputAST.first];
-
             let specialFormResult = specialForm(this, inputAST.rest);
-
             return specialFormResult;
         }
 
@@ -47,37 +46,22 @@ const parser = {
         if (functions[inputAST.first]) {
             const functionToCall = functions[inputAST.first];
             const restEvalueation = this.eval(inputAST.rest);
-
-            let list;
-            if (Array.isArray(restEvalueation)) {
-                list = [functionToCall, ...restEvalueation];
-            } else {
-                list = [functionToCall, restEvalueation];
-            }
-            return list;
+            return consCell(functionToCall, restEvalueation);
         }
 
         if (inputAST.rest) {
             const restEvalueation = this.eval(inputAST.rest);
-
-            let list;
-            if (Array.isArray(restEvalueation)) {
-                list = [inputAST.first, ...restEvalueation];
-            } else {
-                list = [inputAST.first, restEvalueation];
-            }
-
-            return list;
+            return consCell(inputAST.first, restEvalueation);
         }
 
         // constants
-        return inputAST.first;
+        return consCell(inputAST.first);
     },
     interprit(tipsyExpression) {
         const tokenisedExpresion = this.tokenise(tipsyExpression);
         const AST = buildAST(tokenisedExpresion);
         const output = this.eval(AST);
-        return output;
+        return output.first;
     }
 };
 
